@@ -34,6 +34,8 @@
     --quran-border-strong: rgba(210,185,130,0.42);
     --quran-bg: #100e08;
     --quran-bg-card: #1a1610;
+    --morning-color: #f5c842;
+    --evening-color: #7b9fd4;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -104,22 +106,67 @@
     margin-top: 1px;
   }
 
-  .reset-btn {
-    background: transparent;
-    border: 1px solid var(--border-gold);
-    color: var(--text-muted);
-    font-family: 'Amiri', serif;
+  .date-display {
     font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-    flex-shrink: 0;
-    white-space: nowrap;
+    color: var(--text-gold-soft);
+    margin-top: 2px;
+    font-family: 'Amiri', serif;
   }
-  .reset-btn:active { border-color: var(--gold-mid); color: var(--gold-light); }
 
-  .reset-placeholder { width: 70px; flex-shrink: 0; }
+  /* ── Time Toggle ── */
+  .time-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border-gold);
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  .time-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Amiri', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: transparent;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .time-btn.active.morning {
+    background: linear-gradient(135deg, rgba(245,200,66,0.2), rgba(192,148,58,0.15));
+    border: 1px solid rgba(245,200,66,0.4);
+    color: var(--morning-color);
+  }
+
+  .time-btn.active.evening {
+    background: linear-gradient(135deg, rgba(123,159,212,0.2), rgba(80,100,160,0.15));
+    border: 1px solid rgba(123,159,212,0.4);
+    color: var(--evening-color);
+  }
+
+  .time-btn.active.history-active {
+    background: linear-gradient(135deg, rgba(192,148,58,0.15), rgba(140,100,30,0.1));
+    border: 1px solid var(--border-gold-strong);
+    color: var(--gold-light);
+  }
+
+  .time-btn .done-badge {
+    font-size: 11px;
+    background: rgba(95,186,95,0.2);
+    border: 1px solid var(--done-border);
+    color: var(--done-text);
+    border-radius: 10px;
+    padding: 1px 6px;
+  }
 
   /* ── Progress Summary ── */
   .progress-summary {
@@ -340,7 +387,6 @@
   }
   .repeat-tag::before { content: '◈'; font-size: 10px; color: var(--gold-dark); }
 
-  /* ── Count Button ── */
   .count-side {
     display: flex;
     flex-direction: column;
@@ -348,6 +394,28 @@
     gap: 6px;
     flex-shrink: 0;
     width: 54px;
+  }
+
+  .undo-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(192,148,58,0.3);
+    background: rgba(192,148,58,0.06);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .undo-btn:active {
+    border-color: rgba(192,148,58,0.7);
+    color: var(--gold-light);
+    background: rgba(192,148,58,0.15);
   }
 
   .tap-btn {
@@ -410,9 +478,6 @@
 
   .dhikr-card.done .card-progress-fill { background: var(--done-text); }
 
-
-
-
   @keyframes ripple {
     0% { transform: scale(0); opacity: 0.6; }
     100% { transform: scale(3); opacity: 0; }
@@ -427,16 +492,183 @@
     pointer-events: none;
   }
 
+  /* ── All Done Banner ── */
   .all-done-banner {
     display: none;
+    margin: 20px 16px;
     text-align: center;
-    padding: 20px;
-    color: var(--gold-light);
+    padding: 24px 20px;
+    border-radius: 20px;
     font-family: 'Scheherazade New', serif;
-    font-size: 18px;
+    font-size: 20px;
     letter-spacing: 1px;
+    line-height: 1.8;
   }
-  .all-done-banner.show { display: block; }
+
+  .all-done-banner.morning-done {
+    display: block;
+    background: linear-gradient(135deg, rgba(245,200,66,0.1), rgba(192,148,58,0.08));
+    border: 1px solid rgba(245,200,66,0.3);
+    color: var(--morning-color);
+  }
+
+  .all-done-banner.evening-done {
+    display: block;
+    background: linear-gradient(135deg, rgba(123,159,212,0.1), rgba(80,100,160,0.08));
+    border: 1px solid rgba(123,159,212,0.3);
+    color: var(--evening-color);
+  }
+
+  /* ── Section wrapper (show/hide) ── */
+  .section-wrap { display: none; }
+  .section-wrap.visible { display: block; }
+
+  /* ── History Tab ── */
+  .history-section {
+    padding: 16px;
+  }
+
+  .history-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-family: 'Scheherazade New', serif;
+    font-size: 16px;
+    line-height: 2;
+  }
+
+  .history-day {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .history-day::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--gold-mid), transparent);
+    border-radius: 0 16px 16px 0;
+  }
+
+  .history-day.full-done::before {
+    background: linear-gradient(180deg, var(--done-text), transparent);
+  }
+
+  .history-day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .history-date-label {
+    font-family: 'Scheherazade New', serif;
+    font-size: 15px;
+    color: var(--text-cream);
+    font-weight: 600;
+  }
+
+  .history-streak {
+    font-size: 18px;
+  }
+
+  .history-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .history-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .history-bar-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 60px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .history-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(192,148,58,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .history-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+
+  .history-bar-fill.morning { background: linear-gradient(90deg, #8a6520, #f5c842); }
+  .history-bar-fill.evening { background: linear-gradient(90deg, #3a5080, #7b9fd4); }
+
+  .history-bar-pct {
+    font-size: 12px;
+    font-weight: 700;
+    width: 36px;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  .history-bar-pct.morning { color: var(--morning-color); }
+  .history-bar-pct.evening { color: var(--evening-color); }
+
+  .history-streak-row {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-gold-soft);
+    font-family: 'Scheherazade New', serif;
+  }
+
+  .streak-card {
+    background: var(--bg-card2);
+    border: 1px solid var(--border-gold);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .streak-number {
+    font-family: 'Scheherazade New', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+
+  .streak-info strong {
+    display: block;
+    font-size: 13px;
+    color: var(--text-cream);
+    font-family: 'Scheherazade New', serif;
+  }
+
+  .streak-info span {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -444,7 +676,7 @@
 
   @media (max-width: 360px) {
     .dhikr-text { font-size: 18px; }
-    .app-title { font-size: 26px; }
+    .app-title { font-size: 22px; }
   }
 </style>
 </head>
@@ -454,13 +686,27 @@
 
   <div class="top-bar">
     <div class="top-title-row">
-      <div class="reset-placeholder"></div>
+      <div style="width:70px;flex-shrink:0;"></div>
       <div class="title-center">
         <div class="app-title">أذكاري</div>
-        <div class="app-subtitle">أذكار الصباح والمساء</div>
+        <div class="date-display" id="dateDisplay"></div>
       </div>
-      <button class="reset-btn" onclick="resetAll()">↺ إعادة</button>
+      <div style="width:70px;flex-shrink:0;"></div>
     </div>
+
+    <!-- وقت الصباح / المساء / السجل -->
+    <div class="time-toggle">
+      <button class="time-btn morning" id="btnMorning" onclick="switchTime('morning')">
+        🌅 أذكار الصباح
+      </button>
+      <button class="time-btn evening" id="btnEvening" onclick="switchTime('evening')">
+        🌙 أذكار المساء
+      </button>
+      <button class="time-btn" id="btnHistory" onclick="switchTime('history')" style="color:var(--text-muted);">
+        📅 السجل
+      </button>
+    </div>
+
     <div class="progress-summary">
       <div class="progress-ring-wrap">
         <svg class="progress-ring" width="44" height="44" viewBox="0 0 44 44">
@@ -472,116 +718,131 @@
       </div>
       <div class="progress-label">
         <strong id="summaryText">ابدأ أذكارك اليوم</strong>
-        <span id="summaryDetail">لم تُكمَل أي ذكر بعد</span>
+        <span id="summaryDetail">لم يُكتمَل أي ذكر بعد</span>
       </div>
     </div>
   </div>
 
-  <!-- ══ قسم القرآن الكريم ══ -->
-  <div class="section-header quran">
-    <div class="section-line"></div>
-    <div class="section-title-wrap">
-      <span class="section-icon">📖</span>
-      من القرآن الكريم
+  <!-- ══ قسم الصباح ══ -->
+  <div class="section-wrap" id="morningSection">
+    <!-- القرآن الكريم -->
+    <div class="section-header quran">
+      <div class="section-line"></div>
+      <div class="section-title-wrap">
+        <span class="section-icon">📖</span>
+        من القرآن الكريم
+      </div>
+      <div class="section-line"></div>
     </div>
-    <div class="section-line"></div>
+    <div class="cards-list" id="cardsListQuran"></div>
+
+    <!-- السنة النبوية -->
+    <div class="section-header sunnah">
+      <div class="section-line"></div>
+      <div class="section-title-wrap">
+        <span class="section-icon">🌙</span>
+        من السنة النبوية
+      </div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-list" id="cardsListSunnahMorning"></div>
+
+    <div class="all-done-banner" id="morningDoneBanner">
+      ﷽<br>أتممتَ أذكار الصباح 🌅<br><span style="font-size:14px;opacity:0.8">تقبّل الله منك</span>
+    </div>
   </div>
 
-  <div class="cards-list" id="cardsListQuran"></div>
-
-  <!-- ══ قسم أذكار السنة ══ -->
-  <div class="section-header sunnah">
-    <div class="section-line"></div>
-    <div class="section-title-wrap">
-      <span class="section-icon">🌙</span>
-      من السنة النبوية
+  <!-- ══ قسم المساء ══ -->
+  <div class="section-wrap" id="eveningSection">
+    <div class="section-header sunnah">
+      <div class="section-line"></div>
+      <div class="section-title-wrap">
+        <span class="section-icon">🌙</span>
+        من السنة النبوية
+      </div>
+      <div class="section-line"></div>
     </div>
-    <div class="section-line"></div>
+    <div class="cards-list" id="cardsListSunnahEvening"></div>
+
+    <div class="all-done-banner" id="eveningDoneBanner">
+      ﷽<br>أتممتَ أذكار المساء 🌙<br><span style="font-size:14px;opacity:0.8">تقبّل الله منك</span>
+    </div>
   </div>
-
-  <div class="cards-list" id="cardsListSunnah"></div>
-
-  <div class="all-done-banner" id="allDoneBanner">
-    ﷽<br>تقبّل الله منك 🌙
+  <!-- ══ قسم السجل ══ -->
+  <div class="section-wrap" id="historySection">
+    <div class="history-section" id="historyContent"></div>
   </div>
 
 </div>
 
-
-
 <script>
 const quranAdhkar = [
-  {
-    id: 'q1',
-    surah: 'سورة الفاتحة',
-    text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ مَالِكِ يَوْمِ الدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
-    total: 1
-  },
-  {
-    id: 'q2',
-    surah: 'سورة الإخلاص',
-    text: 'قُلْ هُوَ اللَّهُ أَحَدٌ ٱللَّهُ الصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',
-    total: 3
-  },
-  {
-    id: 'q3',
-    surah: 'سورة الفلق',
-    text: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ',
-    total: 3
-  },
-  {
-    id: 'q4',
-    surah: 'سورة الناس',
-    text: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلَٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ',
-    total: 3
-  },
-  {
-    id: 'q5',
-    surah: 'سورة البقرة — آية السحر والحسد',
-    text: 'وَاتَّبَعُوا مَا تَتْلُو الشَّيَاطِينُ عَلَىٰ مُلْكِ سُلَيْمَانَ وَمَا كَفَرَ سُلَيْمَانُ وَلَٰكِنَّ الشَّيَاطِينَ كَفَرُوا يُعَلِّمُونَ النَّاسَ السِّحْرَ وَمَا أُنزِلَ عَلَى الْمَلَكَيْنِ بِبَابِلَ هَارُوتَ وَمَارُوتَ وَمَا يُعَلِّمَانِ مِنْ أَحَدٍ حَتَّىٰ يَقُولَا إِنَّمَا نَحْنُ فِتْنَةٌ فَلَا تَكْفُرْ فَيَتَعَلَّمُونَ مِنْهُمَا مَا يُفَرِّقُونَ بِهِ بَيْنَ الْمَرْءِ وَزَوْجِهِ وَمَا هُم بِضَارِّينَ بِهِ مِنْ أَحَدٍ إِلَّا بِإِذْنِ اللَّهِ وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ وَلَقَدْ عَلِمُوا لَمَنِ اشْتَرَاهُ مَا لَهُ فِي الْآخِرَةِ مِنْ خَلَاقٍ وَلَبِئْسَ مَا شَرَوْا بِهِ أَنفُسَهُمْ لَوْ كَانُوا يَعْلَمُونَ',
-    total: 1
-  },
-  {
-    id: 'q6',
-    surah: 'سورة آل عمران — الحفظ والحماية',
-    text: 'قُلِ اللَّهُمَّ مَالِكَ الْمُلْكِ تُؤْتِي الْمُلْكَ مَن تَشَاءُ وَتَنزِعُ الْمُلْكَ مِمَّن تَشَاءُ وَتُعِزُّ مَن تَشَاءُ وَتُذِلُّ مَن تَشَاءُ بِيَدِكَ الْخَيْرُ إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ تُولِجُ اللَّيْلَ فِي النَّهَارِ وَتُولِجُ النَّهَارَ فِي اللَّيْلِ وَتُخْرِجُ الْحَيَّ مِنَ الْمَيِّتِ وَتُخْرِجُ الْمَيِّتَ مِنَ الْحَيِّ وَتَرْزُقُ مَن تَشَاءُ بِغَيْرِ حِسَابٍ',
-    total: 1
-  },
-  {
-    id: 'q7',
-    surah: 'سورة يونس',
-    text: 'وَإِن يَمْسَسْكَ اللَّهُ بِضُرٍّ فَلَا كَاشِفَ لَهُ إِلَّا هُوَ وَإِن يُرِدْكَ بِخَيْرٍ فَلَا رَادَّ لِفَضْلِهِ يُصِيبُ بِهِ مَن يَشَاءُ مِنْ عِبَادِهِ وَهُوَ الْغَفُورُ الرَّحِيمُ',
-    total: 1
-  },
-  {
-    id: 'q8',
-    surah: 'سورة الإسراء — الشفاء والحماية',
-    text: 'وَقُل رَّبِّ أَدْخِلْنِي مُدْخَلَ صِدْقٍ وَأَخْرِجْنِي مُخْرَجَ صِدْقٍ وَاجْعَل لِّي مِن لَّدُنكَ سُلْطَانًا نَّصِيرًا وَقُلْ جَاءَ الْحَقُّ وَزَهَقَ الْبَاطِلُ إِنَّ الْبَاطِلَ كَانَ زَهُوقًا وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ وَلَا يَزِيدُ الظَّالِمِينَ إِلَّا خَسَارًا',
-    total: 1
-  },
+  { id: 'q1', surah: 'سورة الفاتحة', text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ مَالِكِ يَوْمِ الدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ', total: 1 },
+  { id: 'q2', surah: 'سورة الإخلاص', text: 'قُلْ هُوَ اللَّهُ أَحَدٌ ٱللَّهُ الصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ', total: 3 },
+  { id: 'q3', surah: 'سورة الفلق', text: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ', total: 3 },
+  { id: 'q4', surah: 'سورة الناس', text: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلَٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ', total: 3 },
+  { id: 'q5', surah: 'سورة البقرة — آية السحر والحسد', text: 'وَاتَّبَعُوا مَا تَتْلُو الشَّيَاطِينُ عَلَىٰ مُلْكِ سُلَيْمَانَ وَمَا كَفَرَ سُلَيْمَانُ وَلَٰكِنَّ الشَّيَاطِينَ كَفَرُوا يُعَلِّمُونَ النَّاسَ السِّحْرَ وَمَا أُنزِلَ عَلَى الْمَلَكَيْنِ بِبَابِلَ هَارُوتَ وَمَارُوتَ وَمَا يُعَلِّمَانِ مِنْ أَحَدٍ حَتَّىٰ يَقُولَا إِنَّمَا نَحْنُ فِتْنَةٌ فَلَا تَكْفُرْ فَيَتَعَلَّمُونَ مِنْهُمَا مَا يُفَرِّقُونَ بِهِ بَيْنَ الْمَرْءِ وَزَوْجِهِ وَمَا هُم بِضَارِّينَ بِهِ مِنْ أَحَدٍ إِلَّا بِإِذْنِ اللَّهِ وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ وَلَقَدْ عَلِمُوا لَمَنِ اشْتَرَاهُ مَا لَهُ فِي الْآخِرَةِ مِنْ خَلَاقٍ وَلَبِئْسَ مَا شَرَوْا بِهِ أَنفُسَهُمْ لَوْ كَانُوا يَعْلَمُونَ', total: 1 },
+  { id: 'q6', surah: 'سورة آل عمران — الحفظ والحماية', text: 'قُلِ اللَّهُمَّ مَالِكَ الْمُلْكِ تُؤْتِي الْمُلْكَ مَن تَشَاءُ وَتَنزِعُ الْمُلْكَ مِمَّن تَشَاءُ وَتُعِزُّ مَن تَشَاءُ وَتُذِلُّ مَن تَشَاءُ بِيَدِكَ الْخَيْرُ إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ تُولِجُ اللَّيْلَ فِي النَّهَارِ وَتُولِجُ النَّهَارَ فِي اللَّيْلِ وَتُخْرِجُ الْحَيَّ مِنَ الْمَيِّتِ وَتُخْرِجُ الْمَيِّتَ مِنَ الْحَيِّ وَتَرْزُقُ مَن تَشَاءُ بِغَيْرِ حِسَابٍ', total: 1 },
+  { id: 'q7', surah: 'سورة يونس', text: 'وَإِن يَمْسَسْكَ اللَّهُ بِضُرٍّ فَلَا كَاشِفَ لَهُ إِلَّا هُوَ وَإِن يُرِدْكَ بِخَيْرٍ فَلَا رَادَّ لِفَضْلِهِ يُصِيبُ بِهِ مَن يَشَاءُ مِنْ عِبَادِهِ وَهُوَ الْغَفُورُ الرَّحِيمُ', total: 1 },
+  { id: 'q8', surah: 'سورة الإسراء — الشفاء والحماية', text: 'وَقُل رَّبِّ أَدْخِلْنِي مُدْخَلَ صِدْقٍ وَأَخْرِجْنِي مُخْرَجَ صِدْقٍ وَاجْعَل لِّي مِن لَّدُنكَ سُلْطَانًا نَّصِيرًا وَقُلْ جَاءَ الْحَقُّ وَزَهَقَ الْبَاطِلُ إِنَّ الْبَاطِلَ كَانَ زَهُوقًا وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ وَرَحْمَةٌ لِّلْمُؤْمِنِينَ وَلَا يَزِيدُ الظَّالِمِينَ إِلَّا خَسَارًا', total: 1 },
 ];
 
 const sunnahAdhkar = [
-  { id: 17, text: "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", total: 3 },
-  { id: 18, text: "أَسْأَلُ اللهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ — وَعِنْدَ الْقِرَاءَةِ عَلَى النَّفْسِ: (أَنْ يَشْفِيَنِي)", total: 7 },
-  { id: 19, text: "بِسْمِ اللهِ … أَعُوذُ بِعِزَّةِ اللهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ", total: 7, alt: 3 },
-  { id: 20, text: "أَعُوذُ بِوَجْهِ اللهِ الْعَظِيمِ الَّذِي لَيْسَ شَيْءٌ أَعْظَمُ مِنْهُ، وَبِكَلِمَاتِ اللهِ التَّامَّاتِ الَّتِي لَا يُجَاوِزُهُنَّ بَرٌّ وَلَا فَاجِرٌ مِنْ شَرِّ مَا خَلَقَ وَذَرَأَ وَبَرَأَ، وَمِنْ شَرِّ مَا يَنْزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا، وَمِنْ شَرِّ مَا يَلِي فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا، وَمِنْ شَرِّ طَوَارِقِ اللَّيْلِ وَالنَّهَارِ إِلَّا طَارِقًا يَطْرُقُ بِخَيْرٍ يَا رَحْمَنُ", total: 1 },
-  { id: 21, text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ السَّامَّةِ وَالْهَامَّةِ، وَأَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ عِقَابِهِ وَشَرِّ عِبَادِهِ، وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ", total: 1 },
-  { id: 22, text: "بِسْمِ اللهِ أَرْقِيكَ مِنْ كُلِّ دَاءٍ يُؤْذِيكَ، وَمِنْ شَرِّ كُلِّ حَاسِدٍ وَعَيْنٍ، اللهُ يَشْفِيكَ بِسْمِ اللهِ أَرْقِيكَ", total: 1 },
-  { id: 23, text: "اذْهَبِ الْبَأْسَ رَبَّ النَّاسِ، وَاشْفَ أَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا", total: 1 },
-  { id: 24, text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ", total: 1 },
-  { id: 25, text: "حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", total: 7 },
-  { id: 26, text: "أَعُوذُ بِاللهِ السَّمِيعِ الْعَلِيمِ مِنَ الشَّيْطَانِ الرَّجِيمِ مِنْ هَمْزِهِ وَنَفْخِهِ وَنَفْثِهِ", total: 3 },
-  { id: 28, text: "اللَّهُمَّ احْفَظْ عَلَيَّ عَقْلِي وَدِينِي وَدُنْيَايَ، وَبِكَ يَا رَبِّ يَقِينِي، وَارْزُقْنِي رِزْقًا حَلَالًا كَثِيرًا يَكْفِيَنِي، وَابْعُدْ عَنِّي شَرَّ مَا يُؤْلِمُنِي وَيُؤْذِينِي، وَلَا تُحَوِّجْنِي لِطَبِيبٍ يُدَاوِينِي", total: 1 },
-  { id: 29, text: "اللَّهُمَّ لَا تَكِلْنَا إِلَى أَنْفُسِنَا فَنَعْجِزَ، وَلَا إِلَى النَّاسِ فَنَذِلَّ", total: 3, alt: 1 },
-  { id: 30, text: "اللَّهُمَّ إِنَّكَ قُلْتَ وَقَوْلُكَ الْحَقُّ: (ادْعُونِي أَسْتَجِبْ لَكُمْ)، اللَّهُمَّ هَذَا الدُّعَاءُ وَعَلَيْكَ الْإِجَابَةُ، وَهَذَا الْجُهْدُ وَعَلَيْكَ التُّكْلَانُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِكَ", total: 1 },
+  { id: 's17', text: "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", total: 3 },
+  { id: 's18', text: "أَسْأَلُ اللهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ — وَعِنْدَ الْقِرَاءَةِ عَلَى النَّفْسِ: (أَنْ يَشْفِيَنِي)", total: 7 },
+  { id: 's19', text: "بِسْمِ اللهِ … أَعُوذُ بِعِزَّةِ اللهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ", total: 7, alt: 3 },
+  { id: 's20', text: "أَعُوذُ بِوَجْهِ اللهِ الْعَظِيمِ الَّذِي لَيْسَ شَيْءٌ أَعْظَمُ مِنْهُ، وَبِكَلِمَاتِ اللهِ التَّامَّاتِ الَّتِي لَا يُجَاوِزُهُنَّ بَرٌّ وَلَا فَاجِرٌ مِنْ شَرِّ مَا خَلَقَ وَذَرَأَ وَبَرَأَ، وَمِنْ شَرِّ مَا يَنْزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا، وَمِنْ شَرِّ مَا يَلِي فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا، وَمِنْ شَرِّ طَوَارِقِ اللَّيْلِ وَالنَّهَارِ إِلَّا طَارِقًا يَطْرُقُ بِخَيْرٍ يَا رَحْمَنُ", total: 1 },
+  { id: 's21', text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ السَّامَّةِ وَالْهَامَّةِ، وَأَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ عِقَابِهِ وَشَرِّ عِبَادِهِ، وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ", total: 1 },
+  { id: 's22', text: "بِسْمِ اللهِ أَرْقِيكَ مِنْ كُلِّ دَاءٍ يُؤْذِيكَ، وَمِنْ شَرِّ كُلِّ حَاسِدٍ وَعَيْنٍ، اللهُ يَشْفِيكَ بِسْمِ اللهِ أَرْقِيكَ", total: 1 },
+  { id: 's23', text: "اذْهَبِ الْبَأْسَ رَبَّ النَّاسِ، وَاشْفَ أَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا", total: 1 },
+  { id: 's24', text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ", total: 1 },
+  { id: 's25', text: "حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", total: 7 },
+  { id: 's26', text: "أَعُوذُ بِاللهِ السَّمِيعِ الْعَلِيمِ مِنَ الشَّيْطَانِ الرَّجِيمِ مِنْ هَمْزِهِ وَنَفْخِهِ وَنَفْثِهِ", total: 3 },
+  { id: 's28', text: "اللَّهُمَّ احْفَظْ عَلَيَّ عَقْلِي وَدِينِي وَدُنْيَايَ، وَبِكَ يَا رَبِّ يَقِينِي، وَارْزُقْنِي رِزْقًا حَلَالًا كَثِيرًا يَكْفِيَنِي، وَابْعُدْ عَنِّي شَرَّ مَا يُؤْلِمُنِي وَيُؤْذِينِي، وَلَا تُحَوِّجْنِي لِطَبِيبٍ يُدَاوِينِي", total: 1 },
+  { id: 's29', text: "اللَّهُمَّ لَا تَكِلْنَا إِلَى أَنْفُسِنَا فَنَعْجِزَ، وَلَا إِلَى النَّاسِ فَنَذِلَّ", total: 3, alt: 1 },
+  { id: 's30', text: "اللَّهُمَّ إِنَّكَ قُلْتَ وَقَوْلُكَ الْحَقُّ: (ادْعُونِي أَسْتَجِبْ لَكُمْ)، اللَّهُمَّ هَذَا الدُّعَاءُ وَعَلَيْكَ الْإِجَابَةُ، وَهَذَا الْجُهْدُ وَعَلَيْكَ التُّكْلَانُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِكَ", total: 1 },
 ];
 
-const KEY = 'adhkari_gold_v2';
+// ── Storage helpers ──────────────────────────────────────────────
+const BASE_KEY = 'adhkari_v3';
 
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(BASE_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    const today = todayKey();
+    return all[today] || { morning: {}, evening: {} };
+  } catch(e) { return { morning: {}, evening: {} }; }
+}
+
+function loadAllHistory() {
+  try {
+    const raw = localStorage.getItem(BASE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function saveState(s) {
+  try {
+    const raw = localStorage.getItem(BASE_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    all[todayKey()] = s;
+    localStorage.setItem(BASE_KEY, JSON.stringify(all));
+  } catch(e) {}
+}
+
+// ── App state ────────────────────────────────────────────────────
+let state = loadState();
+let currentTime = 'morning'; // 'morning' | 'evening'
+
+// ── Helpers ──────────────────────────────────────────────────────
 function getMax(d) {
-  if (d.alt) return Math.max(d.total, d.alt);
-  return d.total;
+  return d.alt ? Math.max(d.total, d.alt) : d.total;
 }
 
 function getLabel(d) {
@@ -590,56 +851,210 @@ function getLabel(d) {
   return `${d.total} مرات`;
 }
 
-function loadState() {
-  try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
-  catch(e) { return {}; }
+function isMorningDone() {
+  const all = [...quranAdhkar, ...sunnahAdhkar];
+  return all.every(d => (state.morning[d.id]||0) >= getMax(d));
 }
 
-function saveState(s) {
-  try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e) {}
+function isEveningDone() {
+  return sunnahAdhkar.every(d => (state.evening[d.id]||0) >= getMax(d));
 }
 
-let state = loadState();
+// ── Date display ─────────────────────────────────────────────────
+function updateDateDisplay() {
+  const d = new Date();
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('dateDisplay').textContent =
+    `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
 
-const allAdhkar = [...quranAdhkar, ...sunnahAdhkar];
+// ── Switch between morning / evening ─────────────────────────────
+function switchTime(t) {
+  currentTime = t;
+  document.getElementById('morningSection').classList.toggle('visible', t === 'morning');
+  document.getElementById('eveningSection').classList.toggle('visible', t === 'evening');
+  document.getElementById('historySection').classList.toggle('visible', t === 'history');
+  document.getElementById('btnMorning').classList.toggle('active', t === 'morning');
+  document.getElementById('btnEvening').classList.toggle('active', t === 'evening');
+  document.getElementById('btnHistory').classList.toggle('active', t === 'history');
 
-function updateSummary() {
-  const total = allAdhkar.length;
-  let done = 0;
-  allAdhkar.forEach(d => { if ((state[d.id]||0) >= getMax(d)) done++; });
-  const pct = Math.round((done/total)*100);
-  const circ = 113.1;
-  const offset = circ - (circ * pct / 100);
+  // ألوان التبويب
+  document.getElementById('btnHistory').className =
+    'time-btn' + (t === 'history' ? ' active history-active' : '');
 
-  document.getElementById('ringFill').style.strokeDashoffset = offset;
-  document.getElementById('ringPct').textContent = pct + '%';
-
-  if (done === 0) {
-    document.getElementById('summaryText').textContent = 'ابدأ أذكارك اليوم';
-    document.getElementById('summaryDetail').textContent = 'لم يُكتمَل أي ذكر بعد';
-  } else if (done === total) {
-    document.getElementById('summaryText').textContent = 'أتممتَ جميع الأذكار';
-    document.getElementById('summaryDetail').textContent = 'تقبّل الله منك 🌙';
-    document.getElementById('allDoneBanner').classList.add('show');
+  if (t === 'history') {
+    renderHistory();
+    // إخفاء شريط التقدم في السجل
+    document.querySelector('.progress-summary').style.opacity = '0.3';
   } else {
-    document.getElementById('summaryText').textContent = `أُكمِل ${done} من أصل ${total}`;
-    document.getElementById('summaryDetail').textContent = `تبقّى ${total - done} ذكر`;
-    document.getElementById('allDoneBanner').classList.remove('show');
+    document.querySelector('.progress-summary').style.opacity = '1';
+    updateSummary();
   }
 }
 
-function buildCard(d, isQuran) {
+// ── Calc percent for a day record ─────────────────────────────────
+function calcDayPct(dayData) {
+  if (!dayData) return { morning: 0, evening: 0 };
+  const mList = [...quranAdhkar, ...sunnahAdhkar];
+  const eList = sunnahAdhkar;
+  const mDone = mList.filter(d => (dayData.morning?.[d.id]||0) >= getMax(d)).length;
+  const eDone = eList.filter(d => (dayData.evening?.[d.id]||0) >= getMax(d)).length;
+  return {
+    morning: Math.round((mDone / mList.length) * 100),
+    evening: Math.round((eDone / eList.length) * 100),
+  };
+}
+
+// ── Format date key to Arabic ─────────────────────────────────────
+function formatDayLabel(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  const date = new Date(y, m-1, d);
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  return `${days[date.getDay()]} ${d} ${months[m-1]} ${y}`;
+}
+
+// ── Render history ─────────────────────────────────────────────────
+function renderHistory() {
+  const allData = loadAllHistory();
+  const today = todayKey();
+  const container = document.getElementById('historyContent');
+  container.innerHTML = '';
+
+  // ترتيب الأيام من الأحدث للأقدم
+  const keys = Object.keys(allData)
+    .filter(k => /^\d{4}-\d{1,2}-\d{1,2}$/.test(k))
+    .sort((a, b) => b.localeCompare(a));
+
+  if (keys.length === 0) {
+    container.innerHTML = `<div class="history-empty">📅<br>لا يوجد سجل بعد<br><span style="font-size:13px">ابدأ أذكارك اليوم ليظهر هنا</span></div>`;
+    return;
+  }
+
+  // حساب streak (أيام متتالية أكمل فيها الصباح)
+  let streak = 0;
+  const sortedAsc = [...keys].sort();
+  for (let i = sortedAsc.length - 1; i >= 0; i--) {
+    const pct = calcDayPct(allData[sortedAsc[i]]);
+    if (pct.morning === 100) streak++;
+    else break;
+  }
+
+  // بطاقة الـ streak
+  if (streak > 0) {
+    const sc = document.createElement('div');
+    sc.className = 'streak-card';
+    sc.innerHTML = `
+      <div class="streak-number">${streak}</div>
+      <div class="streak-info">
+        <strong>${streak === 1 ? 'يوم متتالي' : `أيام متتالية`} 🔥</strong>
+        <span>أكملت أذكار الصباح كاملة</span>
+      </div>
+    `;
+    container.appendChild(sc);
+  }
+
+  // بطاقة كل يوم
+  keys.forEach(key => {
+    const dayData = allData[key];
+    const pct = calcDayPct(dayData);
+    const fullDone = pct.morning === 100 && pct.evening === 100;
+
+    const card = document.createElement('div');
+    card.className = 'history-day' + (fullDone ? ' full-done' : '');
+
+    const emoji = pct.morning === 100 && pct.evening === 100 ? '✨' :
+                  pct.morning === 100 ? '🌅' :
+                  pct.morning > 0 ? '🔸' : '○';
+
+    card.innerHTML = `
+      <div class="history-day-header">
+        <div class="history-date-label">${formatDayLabel(key)}</div>
+        <div class="history-streak">${emoji}</div>
+      </div>
+      <div class="history-bars">
+        <div class="history-bar-row">
+          <div class="history-bar-label">الصباح 🌅</div>
+          <div class="history-bar-track">
+            <div class="history-bar-fill morning" style="width:${pct.morning}%"></div>
+          </div>
+          <div class="history-bar-pct morning">${pct.morning}%</div>
+        </div>
+        <div class="history-bar-row">
+          <div class="history-bar-label">المساء 🌙</div>
+          <div class="history-bar-track">
+            <div class="history-bar-fill evening" style="width:${pct.evening}%"></div>
+          </div>
+          <div class="history-bar-pct evening">${pct.evening}%</div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── Progress ring ─────────────────────────────────────────────────
+function updateSummary() {
+  let list, done, total;
+  if (currentTime === 'morning') {
+    list = [...quranAdhkar, ...sunnahAdhkar];
+    done = list.filter(d => (state.morning[d.id]||0) >= getMax(d)).length;
+  } else {
+    list = sunnahAdhkar;
+    done = list.filter(d => (state.evening[d.id]||0) >= getMax(d)).length;
+  }
+  total = list.length;
+  const pct = Math.round((done/total)*100);
+  const circ = 113.1;
+  document.getElementById('ringFill').style.strokeDashoffset = circ - (circ * pct / 100);
+  document.getElementById('ringPct').textContent = pct + '%';
+
+  const mDone = isMorningDone();
+  const eDone = isEveningDone();
+
+  // شارات التبويب
+  document.getElementById('btnMorning').innerHTML =
+    `🌅 أذكار الصباح${mDone ? ' <span class="done-badge">✓</span>' : ''}`;
+  document.getElementById('btnEvening').innerHTML =
+    `🌙 أذكار المساء${eDone ? ' <span class="done-badge">✓</span>' : ''}`;
+
+  // نص التقدم
+  if (done === 0) {
+    document.getElementById('summaryText').textContent = currentTime === 'morning' ? 'ابدأ أذكار الصباح' : 'ابدأ أذكار المساء';
+    document.getElementById('summaryDetail').textContent = 'لم يُكتمَل أي ذكر بعد';
+  } else if (done === total) {
+    document.getElementById('summaryText').textContent = 'أتممتَ جميع الأذكار';
+    document.getElementById('summaryDetail').textContent = 'تقبّل الله منك 🌟';
+  } else {
+    document.getElementById('summaryText').textContent = `أُكمِل ${done} من أصل ${total}`;
+    document.getElementById('summaryDetail').textContent = `تبقّى ${total - done} ذكر`;
+  }
+
+  // بانر الاكتمال
+  const mBanner = document.getElementById('morningDoneBanner');
+  const eBanner = document.getElementById('eveningDoneBanner');
+  mBanner.className = 'all-done-banner' + (mDone ? ' morning-done' : '');
+  eBanner.className = 'all-done-banner' + (eDone ? ' evening-done' : '');
+}
+
+// ── Build card ────────────────────────────────────────────────────
+function buildCard(d, isQuran, timeKey) {
   const max = getMax(d);
-  const cur = state[d.id] || 0;
+  const cur = state[timeKey][d.id] || 0;
   const isDone = cur >= max;
   const pct = Math.min(100, Math.round((cur/max)*100));
+  const sectionDone = timeKey === 'morning' ? isMorningDone() : isEveningDone();
 
   const card = document.createElement('div');
   card.className = 'dhikr-card' + (isQuran ? ' quran-card' : '') + (isDone ? ' done' : '');
 
   const surahLine = isQuran && d.surah
     ? `<div class="surah-label">📖 ${d.surah}</div>`
-    : `<div class="dhikr-number">ذكر ${d.id}</div>`;
+    : '';
+
+  // إذا اكتمل الوقت كله، الأزرار لا تعمل
+  const btnDisabled = sectionDone || isDone;
 
   card.innerHTML = `
     <div class="card-inner">
@@ -652,7 +1067,10 @@ function buildCard(d, isQuran) {
         </div>
       </div>
       <div class="count-side">
-        <button class="tap-btn ${isDone ? 'done-btn' : ''}" onclick="tap('${d.id}', this)" aria-label="اضغط لتسجيل">
+        <button class="tap-btn ${isDone ? 'done-btn' : ''}"
+          onclick="${btnDisabled ? '' : `tap('${d.id}','${timeKey}',this)`}"
+          style="${btnDisabled && !isDone ? 'cursor:default;opacity:0.5;' : ''}"
+          aria-label="اضغط لتسجيل">
           ${isDone
             ? `<span class="btn-check">✓</span>`
             : `<span class="btn-count">${cur}</span><span class="btn-total">/${max}</span>`
@@ -661,28 +1079,43 @@ function buildCard(d, isQuran) {
         <span class="btn-label ${isDone ? 'done-label' : ''}">
           ${isDone ? 'تم ✓' : (cur === 0 ? 'اضغط' : `بقي ${max - cur}`)}
         </span>
+        ${cur > 0 && !sectionDone ? `<button class="undo-btn" onclick="untap('${d.id}','${timeKey}')" title="تراجع">↩</button>` : '<div style="height:26px"></div>'}
       </div>
     </div>
   `;
   return card;
 }
 
+// ── Render ────────────────────────────────────────────────────────
 function renderCards() {
+  // صباح: قرآن + سنة
   const qList = document.getElementById('cardsListQuran');
-  const sList = document.getElementById('cardsListSunnah');
+  const smList = document.getElementById('cardsListSunnahMorning');
   qList.innerHTML = '';
-  sList.innerHTML = '';
+  smList.innerHTML = '';
+  quranAdhkar.forEach(d => qList.appendChild(buildCard(d, true, 'morning')));
+  sunnahAdhkar.forEach(d => smList.appendChild(buildCard(d, false, 'morning')));
 
-  quranAdhkar.forEach(d => qList.appendChild(buildCard(d, true)));
-  sunnahAdhkar.forEach(d => sList.appendChild(buildCard(d, false)));
+  // مساء: سنة فقط
+  const seList = document.getElementById('cardsListSunnahEvening');
+  seList.innerHTML = '';
+  sunnahAdhkar.forEach(d => seList.appendChild(buildCard(d, false, 'evening')));
 
   updateSummary();
 }
 
-function tap(id, btn) {
-  const d = allAdhkar.find(a => String(a.id) === String(id));
+// ── Tap ───────────────────────────────────────────────────────────
+function tap(id, timeKey, btn) {
+  // لو الوقت اكتمل كله، لا تضيف
+  const sectionDone = timeKey === 'morning' ? isMorningDone() : isEveningDone();
+  if (sectionDone) return;
+
+  const list = timeKey === 'morning' ? [...quranAdhkar, ...sunnahAdhkar] : sunnahAdhkar;
+  const d = list.find(a => String(a.id) === String(id));
+  if (!d) return;
+
   const max = getMax(d);
-  const cur = state[id] || 0;
+  const cur = state[timeKey][id] || 0;
   if (cur >= max) return;
 
   const ripple = document.createElement('div');
@@ -690,28 +1123,35 @@ function tap(id, btn) {
   btn.appendChild(ripple);
   setTimeout(() => ripple.remove(), 400);
 
-  state[id] = cur + 1;
+  state[timeKey][id] = cur + 1;
   saveState(state);
   renderCards();
 
-  if (state[id] >= max) {
+  // تمرير لأول ذكر غير مكتمل
+  if (state[timeKey][id] >= max) {
     setTimeout(() => {
-      const cards = document.querySelectorAll('.dhikr-card:not(.done)');
+      const cards = document.querySelectorAll(`#${timeKey === 'morning' ? 'morningSection' : 'eveningSection'} .dhikr-card:not(.done)`);
       if (cards.length > 0) cards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 300);
   }
 }
 
-function resetAll() {
-  if (confirm('هل تريد إعادة ضبط جميع الأذكار؟')) {
-    state = {};
-    saveState(state);
-    document.getElementById('allDoneBanner').classList.remove('show');
-    renderCards();
-  }
+// ── Untap (تراجع) ─────────────────────────────────────────────────
+function untap(id, timeKey) {
+  const sectionDone = timeKey === 'morning' ? isMorningDone() : isEveningDone();
+  if (sectionDone) return; // لو اكتمل الوقت كله لا تراجع
+  const cur = state[timeKey][id] || 0;
+  if (cur <= 0) return;
+  state[timeKey][id] = cur - 1;
+  if (state[timeKey][id] === 0) delete state[timeKey][id];
+  saveState(state);
+  renderCards();
 }
 
+// ── Init ──────────────────────────────────────────────────────────
+updateDateDisplay();
 renderCards();
+switchTime('morning');
 </script>
 </body>
 </html>
